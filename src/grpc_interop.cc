@@ -111,19 +111,25 @@ LIBRARY_EXPORT int32_t LVCreateServer(grpc_labview::gRPCid** id)
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 LIBRARY_EXPORT int32_t LVStartServer(char* address, char* serverCertificatePath, char* serverKeyPath, grpc_labview::gRPCid** id)
-{   
+{
     auto server = (*id)->CastTo<grpc_labview::LabVIEWgRPCServer>();
     if (server == nullptr)
     {
+        std::cout << "LVStartServer is null." << std::endl;
         return -1;
     }
-    return server->Run(address, serverCertificatePath, serverKeyPath);
+    auto ret = server->Run(address, serverCertificatePath, serverKeyPath);
+    if (ret != 0)
+    {
+        std::cout << "LVStartServer: server->Run failed with error " << ret << std::endl;
+    }
+    return ret;
 }
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 LIBRARY_EXPORT int32_t LVGetServerListeningPort(grpc_labview::gRPCid** id, int* listeningPort)
-{   
+{
     auto server = (*id)->CastTo<grpc_labview::LabVIEWgRPCServer>();
     if (server == nullptr)
     {
@@ -157,7 +163,7 @@ int32_t ServerCleanupProc(grpc_labview::gRPCid* serverId)
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 LIBRARY_EXPORT int32_t RegisterMessageMetadata(grpc_labview::gRPCid** id, grpc_labview::LVMessageMetadata* lvMetadata)
-{    
+{
     auto server = (*id)->CastTo<grpc_labview::MessageElementMetadataOwner>();
     if (server == nullptr)
     {
@@ -171,7 +177,7 @@ LIBRARY_EXPORT int32_t RegisterMessageMetadata(grpc_labview::gRPCid** id, grpc_l
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 LIBRARY_EXPORT int32_t RegisterMessageMetadata2(grpc_labview::gRPCid** id, grpc_labview::LVMessageMetadata2* lvMetadata)
-{    
+{
     auto server = (*id)->CastTo<grpc_labview::MessageElementMetadataOwner>();
     if (server == nullptr)
     {
@@ -185,7 +191,7 @@ LIBRARY_EXPORT int32_t RegisterMessageMetadata2(grpc_labview::gRPCid** id, grpc_
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 LIBRARY_EXPORT int32_t CompleteMetadataRegistration(grpc_labview::gRPCid** id)
-{        
+{
     auto server = (*id)->CastTo<grpc_labview::MessageElementMetadataOwner>();
     if (server == nullptr)
     {
@@ -198,7 +204,7 @@ LIBRARY_EXPORT int32_t CompleteMetadataRegistration(grpc_labview::gRPCid** id)
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 LIBRARY_EXPORT int32_t RegisterServerEvent(grpc_labview::gRPCid** id, const char* name, grpc_labview::LVUserEventRef* item, const char* requestMessageName, const char* responseMessageName)
-{    
+{
     auto server = (*id)->CastTo<grpc_labview::LabVIEWgRPCServer>();
     if (server == nullptr)
     {
@@ -212,7 +218,7 @@ LIBRARY_EXPORT int32_t RegisterServerEvent(grpc_labview::gRPCid** id, const char
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 LIBRARY_EXPORT int32_t RegisterGenericMethodServerEvent(grpc_labview::gRPCid** id, grpc_labview::LVUserEventRef* item)
-{    
+{
     auto server = (*id)->CastTo<grpc_labview::LabVIEWgRPCServer>();
     if (server == nullptr)
     {
@@ -284,7 +290,7 @@ LIBRARY_EXPORT int32_t CloseServerEvent(grpc_labview::gRPCid** id)
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 LIBRARY_EXPORT int32_t SetCallStatus(grpc_labview::gRPCid** id, int grpcErrorCode, const char* errorMessage)
-{    
+{
     auto data = (*id)->CastTo<grpc_labview::GenericMethodData>();
     if (data == nullptr)
     {

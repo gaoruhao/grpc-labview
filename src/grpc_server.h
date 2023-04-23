@@ -100,6 +100,7 @@ namespace grpc_labview
     private:
         std::mutex _mutex;
         std::unique_ptr<Server> _server;
+        std::unique_ptr<grpc::ServerCompletionQueue> _cq;
         std::map<std::string, LVEventData> _registeredServerMethods;
         LVUserEventRef _genericMethodEvent;
         std::unique_ptr<grpc::AsyncGenericService> _rpcService;
